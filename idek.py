@@ -3,8 +3,18 @@ import random
 import os
 from discord.ext import commands
 
+# Gets bot prefix from file FIXME Probably find a better way to do this
+if os.path.isfile("prefix.txt"):
+    prefixFile = open("prefix.txt", "r")
+    PREFIX = prefixFile.readline()
+    if PREFIX == "":
+        PREFIX = "!" # Revert to default if file blank
+    prefixFile.close()
+else:
+    PREFIX = "!" # Default prefix
+
 keyLength = 8 # Default Key length
-bot = commands.Bot(command_prefix='!', description="Encrypts text using a crappy cipher algorithm")
+bot = commands.Bot(command_prefix=PREFIX, description="Encrypts text using a crappy cipher algorithm")
 games = ["dont", "Phentom Pen", "Ledder clemb", "Maghrib Salah", "pleg pleg", "MoinCraph"]
 
 # Gets bot token from file or input
@@ -113,6 +123,14 @@ async def reroll(ctx):
 async def status(ctx, *, status):
     await ctx.send("Changing Status...")
     await bot.change_presence(activity=discord.Game(name=status))
+
+@bot.command(name="prefix", description="Changes bot prefix and saves to file")
+async def prefix(ctx, *, prefix):
+    await ctx.send("Changing Bot Prefix to '" + prefix + "'...")
+    await ctx.send("Note: Requires restart for now")
+    prefixFile = open("prefix.txt", "w")
+    prefixFile.write(prefix)
+    prefixFile.close()
 
 @bot.command(name="close", description="Stops execution of program")
 async def close(ctx):
