@@ -1,20 +1,28 @@
 import discord
 import random
+import json
 import os
 from discord.ext import commands
 
-# Gets bot prefix from file FIXME Probably find a better way to do this
-if os.path.isfile("prefix.txt"):
-    prefixFile = open("prefix.txt", "r")
-    PREFIX = prefixFile.readline()
-    if PREFIX == "":
-        PREFIX = "!" # Revert to default if file blank
-    prefixFile.close()
-else:
-    PREFIX = "!" # Default prefix
+# Makes new prefix json file
+try:
+    open("prefixes.json","x")
+    open("prefixes.json","w").write("{}")
+    print("Prefixes.json created, used to store per server prefixes.\n")
+except:
+    print("Prefixes.json already exists or was unable to be created.\n")
+
+# Gets bot prefix from file
+with open("prefixes.json","r") as f:
+    prefixes = json.load(f)
+defaultPrefix = "e!"
+
+def prefix(bot, message):
+    return str(prefixes.get(str(message.guild.id), defaultPrefix)) if message.guild != None else defaultPrefix
 
 keyLength = 8 # Default Key length
-bot = commands.Bot(command_prefix=PREFIX, description="Encrypts text using a crappy cipher algorithm")
+bot = commands.Bot(command_prefix=prefix, description="Encrypts text using a crappy cipher algorithm")
+bot.help_message = bot.description
 games = ["dont", "Phentom Pen", "Ledder clemb", "Maghrib Salah", "pleg pleg", "MoinCraph"]
 
 # Gets bot token from file or input
@@ -27,11 +35,18 @@ else:
 
 @bot.event
 async def on_ready():
-    print('Logged in as')
+    print('---------------------------------------')
+    print('Logged in as:')
     print(bot.user.name)
     print(bot.user.id)
-    print('------')
+    print('---------------------------------------')
     await bot.change_presence(activity=discord.Game(name=games[random.randint(0,len(games)-1)]))
+
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        await ctx.send("Command not found")
+        return
 
 @bot.command(name="bekfast", description="Prints something stupid")
 async def bekfast(ctx):
@@ -124,13 +139,13 @@ async def status(ctx, *, status):
     await ctx.send("Changing Status...")
     await bot.change_presence(activity=discord.Game(name=status))
 
-@bot.command(name="prefix", description="Changes bot prefix and saves to file")
-async def prefix(ctx, *, prefix):
-    await ctx.send("Changing Bot Prefix to '" + prefix + "'...")
-    await ctx.send("Note: Requires restart for now")
-    prefixFile = open("prefix.txt", "w")
-    prefixFile.write(prefix)
-    prefixFile.close()
+@bot.command(name="setprefix", description="Changes bot prefix for this server")
+async def setprefix(ctx, prefixToBeSet):
+    prefixes[str(ctx.guild.id)] = prefixToBeSet
+    await ctx.send("Prefix for {} set to `{}`".format(ctx.guild.name,prefixToBeSet))
+    with open("prefixes.json","w") as f:
+        f.write(str(json.dumps(prefixes)))
+        f.flush()
 
 @bot.command(name="close", description="Stops execution of program")
 async def close(ctx):
