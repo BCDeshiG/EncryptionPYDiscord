@@ -10,7 +10,7 @@ Optimised Port of [Python Encryption CW](https://github.com/BCDeshiG/Python-Encr
 - `encrypt <text>` generates a key (default length 8) and outputs the cipher.
 - `decrypt <key> <text>` decrypts the text using said key.
 - `chunk <text>` removes spaces in the text before adding a space every 5 characters (replaces AdvancedEncryption from original).
-- `setprefix <prefix>` changes the bot prefix (reverts to default if left blank)
+- `setprefix <prefix>` changes the bot prefix.
 
 ## Meme commands
 - `bekfast` "What is going on here!"
