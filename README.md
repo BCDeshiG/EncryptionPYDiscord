@@ -1,6 +1,6 @@
 # EncryptionPYDiscord
 
-A Discord bot that can encrypt/decrypt text using a crappy algorithm as per specification.
+A Discord bot that can encrypt/decrypt text using a crappy caesar cipher algorithm as per specification.
 Optimised Port of [Python Encryption CW](https://github.com/BCDeshiG/Python-Encryption-CW) that I made years ago as coursework.
 
 # Usage
@@ -16,8 +16,10 @@ Optimised Port of [Python Encryption CW](https://github.com/BCDeshiG/Python-Encr
 - `bekfast` "What is going on here!"
 - `status <text>` changes the bot status.
 - `reroll` chooses a random status.
+- `echo <text>` outputs whatever text you give it.
 
 # Installation
+- Make sure you have the latest version of [discord.py](https://discordpy.readthedocs.io/en/latest/) installed.
 - Put bot token in `token.txt` in the same directory as the python script.
 - Run the python script.
 - Simple as. (If it can't find the token, it will ask you to input it manually).
